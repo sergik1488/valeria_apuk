@@ -228,29 +228,29 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
                             background='cyan1',
                             fg='black',
                             command=to_window_report)
-    to_reports.grid(column=1, row=0, ipadx=200, padx=250)
-    def show_table_main(db):
-        tree = Treeview(root)
-        db_col = list(db.columns)
-        verscrlbar = tki.Scrollbar(root,
-                                   orient="vertical",
-                                   command=tree.yview)
-        tree["columns"] = db_col
-        tree['show'] = 'headings'
-        for i in range(len(db_col)):
-            tree.column(db_col[i], width=15, anchor='c')
-            tree.heading(db_col[i], text=str(db_col[i]))
-        for k in range(len(db)):
-            tree.insert("", 'end',values=(list(db.iloc[k])))
-        tree.grid(column=1,row=10,ipadx=300)
-        verscrlbar.grid(column=1,row=2)
+    to_reports.grid(column=0, row=1, ipadx=80)
+
     db = pd.read_csv(tabl1, sep=';') \
         .merge(pd.read_csv(tabl2, sep=';'), on='Н_ПРО') \
         .merge(pd.read_csv(tabl3, sep=';'), on='Н_ПРО') \
         .merge(pd.read_csv(tabl4, sep=';'), on='Н_ЖАНР') \
         .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР',ascending=True)
-    show_table_main(db)
-    massstart = [btn, to_reports]
+    tree = Treeview(root)
+    db_col = list(db.columns)
+    verscrlbar = tki.Scrollbar(root,
+                               orient="vertical",
+                               command=tree.yview)
+    tree["columns"] = db_col
+    tree['show'] = 'headings'
+    for i in range(len(db_col)):
+        tree.column(db_col[i], width=15, anchor='c')
+        tree.heading(db_col[i], text=str(db_col[i]))
+    for k in range(len(db)):
+        tree.insert("", 'end', values=(list(db.iloc[k])))
+    tree.grid(column=2, row=10, ipadx=200)
+    verscrlbar.grid(column=3, row=10, ipady=86)
+    tree.configure(yscrollcommand=verscrlbar.set)
+    massstart = [btn, to_reports, verscrlbar, tree]
 
 
 def Reports(root, db):
