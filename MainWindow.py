@@ -4,7 +4,8 @@ import pandas as pd
 import numpy as np
 import os.path
 import sys
-from PIL import Image, ImageTk
+from functools import partial
+
 
 massstart = []
 
@@ -42,12 +43,25 @@ def start(root):
     massstart = [lbl1, btn]
 
 
+tabl1 = []
+tabl2 = []
+tabl3 = []
+tabl4 = []
+
 def MainWind(root):
 
-    tabl1 = None
-    tabl2 = None
-    tabl3 = None
-    tabl4 = None
+
+    def newwin():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        tabl1 = "tabl1"
+        tabl2 = "tabl2"
+        tabl3 = "tabl3"
+        tabl4 = "tabl4"
+        DataWindow(root, tabl1, tabl2, tabl3,tabl4)
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -55,20 +69,30 @@ def MainWind(root):
             else:
                 i.grid()
         start(root)
-
+    def newwinifopened():
+        if tabl1 == [] or tabl2 == [] or tabl3 == [] or tabl4 == []:
+            print("Ещё не всё")
+        else:
+            for i in massstart:
+                if i.winfo_viewable():
+                    i.grid_remove()
+                else:
+                    i.grid()
+            DataWindow(root, tabl1[-1], tabl2[-1], tabl3[-1], tabl4[-1])
     def choose_file():
         filename = fd.askopenfilename(title="Открыть файл", initialdir="/",filetypes=(("CSV файл", "*.csv"),))
-        tabl1 = filename
+        tabl1.append(filename)
+
 
     def choose_file2():
         filename = fd.askopenfilename(title="Открыть файл", initialdir="/",filetypes=(("CSV файл", "*.csv"),))
-        tabl2 = filename
+        tabl2.append(filename)
     def choose_file3():
         filename = fd.askopenfilename(title="Открыть файл", initialdir="/",filetypes=(("CSV файл", "*.csv"),))
-        tabl3 = filename
+        tabl3.append(filename)
     def choose_file4():
         filename = fd.askopenfilename(title="Открыть файл", initialdir="/",filetypes=(("CSV файл", "*.csv"),))
-        tabl14 = filename
+        tabl4.append(filename)
 
 
     btn = tki.Button(
@@ -104,7 +128,8 @@ def MainWind(root):
         background='cyan1',
         fg='black',
         command=choose_file)
-    btnchoose1.grid(column=0, row=1, pady=40)
+
+    btnchoose1.grid(column=0, row=1, pady=40, ipadx=18)
     btnchoose2 = tki.Button(
         root,
         text='Проекты',
@@ -115,7 +140,7 @@ def MainWind(root):
         background='cyan1',
         fg='black',
         command=choose_file2)
-    btnchoose2.grid(column=0, row=2, pady=40)
+    btnchoose2.grid(column=0, row=2, pady=40, ipadx=88)
     btnchoose3 = tki.Button(
         root,
         text='Номер проекта',
@@ -126,7 +151,7 @@ def MainWind(root):
         background='cyan1',
         fg='black',
         command=choose_file3)
-    btnchoose3.grid(column=0, row=3, pady=40)
+    btnchoose3.grid(column=0, row=3, pady=40, ipadx=62)
     btnchoose4 = tki.Button(
         root,
         text='Жанры',
@@ -137,5 +162,50 @@ def MainWind(root):
         background='cyan1',
         fg='black',
         command=choose_file4)
-    btnchoose4.grid(column=0, row=4, pady=40)
-    massstart = [btn, btnchoose1, lbl1, btnchoose2, btnchoose3, btnchoose4]
+    btnchoose4.grid(column=0, row=4, pady=40, ipadx=96)
+    btnusingready = tki.Button(
+        root,
+        text='Использовать готовую БД',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=newwin)
+    btnusingready.grid(column=1, row=2, pady=40)
+    btnusingready1 = tki.Button(
+        root,
+        text='Создать свою БД',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=newwinifopened)
+    btnusingready1.grid(column=1, row=3, pady=40, ipadx=40)
+
+    massstart = [btn, btnchoose1, lbl1, btnchoose2, btnchoose3, btnchoose4, btnusingready, btnusingready1]
+
+
+def DataWindow(root, tabl1, tabl2, tabl3,tabl4):
+    def pred():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        MainWind(root)
+    btn = tki.Button(
+        root,
+        text='Назад',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=pred)
+    btn.grid(column=0, row=0, ipadx=100)
+    massstart = [btn]
