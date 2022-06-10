@@ -226,7 +226,7 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
                             background='cyan1',
                             fg='black',
                             command=to_window_report)
-    to_reports.grid(column=1, row=0, ipadx=200)
+    to_reports.grid(column=1, row=0, ipadx=200, padx=250)
 
     db = pd.read_csv(tabl1, sep=';') \
         .merge(pd.read_csv(tabl2, sep=';'), on='Н_ПРО') \
@@ -291,7 +291,7 @@ def Reports(root, db):
                            fg='black',
                            text='Простой отчёт',
                            command=opensimple_report)
-    to_simple.grid(column=50, row=44)
+    to_simple.grid(column=50, row=44, pady=40)
     massstart = [generate_pivot, to_simple]
 
 def simple_report(root, db):
