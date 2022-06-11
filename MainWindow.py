@@ -309,7 +309,7 @@ def Reports(root, db):
                                 background='cyan1',
                                 fg='black',
                                 command=lambda: create_pivot(db))
-    generate_pivot.grid(column=2, row=1)
+    generate_pivot.grid(column=1, row=2, ipadx=27)
 
     def create_pivot(db):
 
@@ -345,7 +345,7 @@ def Reports(root, db):
                            fg='black',
                            text='Простой отчёт',
                            command=opensimple_report)
-    to_simple.grid(column=1, row=1, pady=40)
+    to_simple.grid(column=1, row=1, ipadx=40)
     Graph_btn = tki.Button(root,
                            font=(
                                'Times',
@@ -355,7 +355,7 @@ def Reports(root, db):
                            fg='black',
                            text='К графикам',
                            command=to_Graphs)
-    Graph_btn.grid(column=1,row=2)
+    Graph_btn.grid(column=1,row=3, ipadx=50)
     massstart = [btn, generate_pivot, to_simple,Graph_btn]
 
 
@@ -490,7 +490,7 @@ def Graphs(root, db):
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
-        mas.append(canvas)
+        mas.append(canvas.get_tk_widget())
     barplot_btn = tki.Button(root,
         text='Построить Барплот',
         font=(
@@ -515,7 +515,7 @@ def Graphs(root, db):
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
-        mas.append(canvas)
+        mas.append(canvas.get_tk_widget())
     histplot_btn = tki.Button(root,
                              text='Построить Хистплот',
                              font=(
@@ -539,7 +539,7 @@ def Graphs(root, db):
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
-        mas.append(canvas)
+        mas.append(canvas.get_tk_widget())
     boxlot_btn = tki.Button(root,
                             text='Построить Боксплот',
                             font=(
@@ -563,7 +563,7 @@ def Graphs(root, db):
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
-        mas.append(canvas)
+        mas.append(canvas.get_tk_widget())
     scatter_btn = tki.Button(root,
                             text='Построить Скаттер-плот',
                             font=(
@@ -573,9 +573,9 @@ def Graphs(root, db):
                             background='cyan1',
                             fg='black',
                             command=lambda: scatter(db))
-    btn_back.grid(column=0,row=0)
-    barplot_btn.grid(column=0,row=1)
-    histplot_btn.grid(column=0,row=2)
-    boxlot_btn.grid(column=0,row=3)
-    scatter_btn.grid(column=0,row=4)
+    btn_back.grid(column=0,row=0, ipadx=100)
+    barplot_btn.grid(column=0,row=1, ipadx=41)
+    histplot_btn.grid(column=0,row=2, ipadx=36)
+    boxlot_btn.grid(column=0,row=3, ipadx=36)
+    scatter_btn.grid(column=0,row=4, ipadx=18)
     massstart = [btn_back, barplot_btn, histplot_btn, boxlot_btn, scatter_btn]
