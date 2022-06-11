@@ -772,12 +772,12 @@ def RedactWindow(root):
         for i in selected:
             tree_edit.delete(i)
         values = []
-        new_db = pd.DataFrame(columns=['Н_АКТЁР', 'ФИО', 'Д.Р', 'ПОЛ', 'СТАЖ', 'ПРОЕКТ', 'ЖАНР'])
+        new_db = pd.DataFrame(columns=['Н_АКТЁР', 'ФИО', 'Д.Р.', 'ПОЛ', 'СТАЖ', 'ПРОЕКТ', 'ЖАНР'])
         for line in tree_edit.get_children():
             for value in tree_edit.item(line)['values']:
                 values.append(value)
         for i in range(0, len(values), 7):
-            new_row = {'Н_АКТЁР': values[i], 'ФИО': values[i + 1], 'Д.Р': values[i + 2],
+            new_row = {'Н_АКТЁР': values[i], 'ФИО': values[i + 1], 'Д.Р.': values[i + 2],
                        'ПОЛ': values[i + 3], 'СТАЖ': values[i + 4], 'ПРОЕКТ': values[i + 5], 'ЖАНР': values[i + 6]}
             new_db = new_db.append(new_row, ignore_index=True)
         db = new_db
