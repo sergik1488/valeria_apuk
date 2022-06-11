@@ -199,6 +199,15 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
                 i.grid()
         MainWind(root)
 
+    lbl1 = tki.Label(
+        root,
+        text="База данных",
+        font=(
+            'Times',
+            24,
+            'bold'),
+        bg='SkyBlue1')
+    lbl1.grid(column=2, row=0)
     btn = tki.Button(
         root,
         text='Назад',
