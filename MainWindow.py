@@ -354,7 +354,7 @@ def Reports(root, db):
                            text='К графикам',
                            command=to_Graphs)
     Graph_btn.grid(column=1,row=2)
-    massstart = [generate_pivot, to_simple,Graph_btn]
+    massstart = [btn, generate_pivot, to_simple,Graph_btn]
 
 
 def simple_report(root, db):
@@ -560,3 +560,4 @@ def Graphs(root, db):
     histplot_btn.grid(column=0,row=2)
     boxlot_btn.grid(column=0,row=3)
     scatter_btn.grid(column=0,row=4)
+    massstart = [btn_back, barplot_btn, histplot_btn, boxlot_btn, scatter_btn]
