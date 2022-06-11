@@ -259,7 +259,7 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
     tree.grid(column=2, row=10, ipadx=200)
     verscrlbar.grid(column=3, row=10, ipady=86)
     tree.configure(yscrollcommand=verscrlbar.set)
-    massstart = [btn, to_reports, verscrlbar, tree]
+    massstart = [btn, to_reports, verscrlbar, tree, lbl1]
 
 
 def Reports(root, db):
