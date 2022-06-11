@@ -57,6 +57,16 @@ tabl4 = []
 
 def MainWind(root):
     global db
+
+    def ready():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        global db
+        db = pd.read_csv("ReadyBD.csv", sep=";")
+        DataWindow(root)
     def newwin():
         for i in massstart:
             if i.winfo_viewable():
@@ -205,8 +215,20 @@ def MainWind(root):
         fg='black',
         command=newwinifopened)
     btnusingready1.grid(column=1, row=3, pady=40, ipadx=40)
+    btnusingready2 = tki.Button(
+        root,
+        text='Загрузить готовую',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=ready)
+    btnusingready2.grid(column=1, row=4, pady=40, ipadx=40)
 
-    massstart = [btn, btnchoose1, lbl1, btnchoose2, btnchoose3, btnchoose4, btnusingready, btnusingready1]
+    massstart = [btn, btnchoose1, lbl1, btnchoose2, btnchoose3, btnchoose4, btnusingready, btnusingready1,
+                 btnusingready2]
 
 
 def DataWindow(root):
@@ -695,6 +717,7 @@ def RedactWindow(root):
                 i.grid()
         for i in mas:
             i.grid_remove()
+        db.to_csv("ReadyBD.csv", sep=";")
         DataWindow(root)
     def to_add():
         for i in massstart:
@@ -774,6 +797,7 @@ def RedactWindow(root):
 
 def AddWindow(root):
     global db
+
     def pred():
         for i in massstart:
             if i.winfo_viewable():
