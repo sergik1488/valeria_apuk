@@ -1,14 +1,11 @@
 import tkinter as tki
 import tkinter.filedialog as fd
 from tkinter.ttk import Treeview
-from PIL import ImageTk, Image
 import pandas as pd
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import time
 import numpy as np
 import os.path
 import sys
-from functools import partial
 
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -66,7 +63,12 @@ def MainWind(root):
         tabl2.append("tabl2.csv")
         tabl3.append("tabl3.csv")
         tabl4.append("tabl4.csv")
-        DataWindow(root, tabl1[-1], tabl2[-1], tabl3[-1], tabl4[-1])
+        db = pd.read_csv(tabl1[-1], sep=';') \
+            .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
+            .merge(pd.read_csv(tabl3[-1], sep=';'), on='Н_ПРО') \
+            .merge(pd.read_csv(tabl4[-1], sep=';'), on='Н_ЖАНР') \
+            .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
+        DataWindow(root, db)
 
     def pred():
         for i in massstart:
@@ -85,7 +87,12 @@ def MainWind(root):
                     i.grid_remove()
                 else:
                     i.grid()
-            DataWindow(root, tabl1[-1], tabl2[-1], tabl3[-1], tabl4[-1])
+            db = pd.read_csv(tabl1[-1], sep=';') \
+                .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
+                .merge(pd.read_csv(tabl3[-1], sep=';'), on='Н_ПРО') \
+                .merge(pd.read_csv(tabl4[-1], sep=';'), on='Н_ЖАНР') \
+                .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
+            DataWindow(root, db)
 
     def choose_file():
         filename = fd.askopenfilename(title="Открыть файл", initialdir="/", filetypes=(("CSV файл", "*.csv"),))
@@ -195,7 +202,7 @@ def MainWind(root):
     massstart = [btn, btnchoose1, lbl1, btnchoose2, btnchoose3, btnchoose4, btnusingready, btnusingready1]
 
 
-def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
+def DataWindow(root, db):
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -253,10 +260,10 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
         command=to_redact
     )
     btn_redact.grid(column=0, row=2, ipadx=4)
-    db = pd.read_csv(tabl1, sep=';') \
-        .merge(pd.read_csv(tabl2, sep=';'), on='Н_ПРО') \
-        .merge(pd.read_csv(tabl3, sep=';'), on='Н_ПРО') \
-        .merge(pd.read_csv(tabl4, sep=';'), on='Н_ЖАНР') \
+    db = pd.read_csv(tabl1[-1], sep=';') \
+        .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
+        .merge(pd.read_csv(tabl3[-1], sep=';'), on='Н_ПРО') \
+        .merge(pd.read_csv(tabl4[-1], sep=';'), on='Н_ЖАНР') \
         .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
     tree = Treeview(root)
     db_col = list(db.columns)
@@ -294,7 +301,7 @@ def Reports(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        DataWindow(root, tabl1[-1], tabl2[-1], tabl3[-1], tabl4[-1])
+        DataWindow(root, db)
 
     btn = tki.Button(
         root,
@@ -649,7 +656,7 @@ def RedactWindow(root,db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        DataWindow(root, db,tabl2=None,tabl3=None,tabl4=None)
+        DataWindow(root, db)
     btn_back = tki.Button(
         root,
         text='Назад',
