@@ -13,6 +13,7 @@ import seaborn as sns
 massstart = []
 mas = []
 
+
 def start(root):
     def opennextwindov():
         for i in massstart:
@@ -241,6 +242,7 @@ def DataWindow(root, db):
                             fg='black',
                             command=to_window_report)
     to_reports.grid(column=0, row=1, ipadx=81)
+
     def to_redact():
         for i in massstart:
             if i.winfo_viewable():
@@ -248,6 +250,7 @@ def DataWindow(root, db):
             else:
                 i.grid()
         RedactWindow(root, db)
+
     btn_redact = tki.Button(
         root,
         text='Редактировать базу данных',
@@ -259,6 +262,27 @@ def DataWindow(root, db):
         fg='black',
         command=to_redact
     )
+
+    def to_add():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        AddWindow(root, db)
+
+    btn_add = tki.Button(
+        root,
+        text='Добавить в базу данных',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=to_add
+    )
+    btn_add.grid(column=0, row=5, ipadx=21)
     btn_redact.grid(column=0, row=2, ipadx=4)
     db = pd.read_csv(tabl1[-1], sep=';') \
         .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
@@ -280,7 +304,7 @@ def DataWindow(root, db):
     tree.grid(column=2, row=10, ipadx=200)
     verscrlbar.grid(column=3, row=10, ipady=86)
     tree.configure(yscrollcommand=verscrlbar.set)
-    massstart = [btn, to_reports, verscrlbar, tree, btn_redact]
+    massstart = [btn, to_reports, verscrlbar, tree, btn_redact, btn_add]
 
 
 def Reports(root, db):
@@ -292,7 +316,8 @@ def Reports(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        Graphs(root,db)
+        Graphs(root, db)
+
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -314,6 +339,7 @@ def Reports(root, db):
         fg='black',
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
+
     def stats_report(db):
         for i in mas:
             i.grid_remove()
@@ -347,16 +373,18 @@ def Reports(root, db):
         for k in range(len(genre_full)):
             tree3.insert("", 'end', values=(list(genre_full.iloc[k])))
         tree3.grid(column=5, row=10, ipadx=200)
+
     btn_stats = tki.Button(root,
-        text='Простая статистика БД',
-        font=(
-            'Times',
-            14,
-            'bold'),
-        background='cyan1',
-        fg='black',
-        command=lambda:stats_report(db))
+                           text='Простая статистика БД',
+                           font=(
+                               'Times',
+                               14,
+                               'bold'),
+                           background='cyan1',
+                           fg='black',
+                           command=lambda: stats_report(db))
     btn_stats.grid(column=1, row=4)
+
     def opensimple_report():
         for i in massstart:
             if i.winfo_viewable():
@@ -404,6 +432,7 @@ def Reports(root, db):
         tree2.configure(yscrollcommand=verscrlbar2.set)
         mas.append(tree2)
         mas.append(verscrlbar2)
+
     to_simple = tki.Button(root,
                            font=(
                                'Times',
@@ -423,8 +452,8 @@ def Reports(root, db):
                            fg='black',
                            text='К графикам',
                            command=to_Graphs)
-    Graph_btn.grid(column=1,row=3, ipadx=50)
-    massstart = [btn, generate_pivot, to_simple,Graph_btn, btn_stats]
+    Graph_btn.grid(column=1, row=3, ipadx=50)
+    massstart = [btn, generate_pivot, to_simple, Graph_btn, btn_stats]
 
 
 def simple_report(root, db):
@@ -442,6 +471,7 @@ def simple_report(root, db):
         for i in mas:
             i.grid_remove()
         search_simple(db)
+
     def search_simple(db=None):
         tree3 = Treeview(root)
         verscrlbar2 = tki.Scrollbar(root,
@@ -463,7 +493,6 @@ def simple_report(root, db):
         if bolcb7.get() == True:
             Needed_columns.append(cb7.cget('text'))
 
-
         db_simple = db[Needed_columns]
 
         db_col = list(db_simple.columns)
@@ -473,7 +502,6 @@ def simple_report(root, db):
             tree3.column(db_col[i], width=50, anchor='c', stretch=False)
             tree3.heading(db_col[i], text=str(db_col[i]))
         for k in range(len(db_simple)):
-
             tree3.insert("", 'end', values=(list(db_simple.iloc[k])))
         tree3.grid(column=2, row=10)
         verscrlbar2.grid(column=3, row=10, ipady=86)
@@ -520,6 +548,8 @@ def simple_report(root, db):
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
     massstart = [btn, search, cb5, cb6, cb7, cb4, cb3, cb2]
+
+
 def Graphs(root, db):
     def pred():
         for i in massstart:
@@ -530,6 +560,7 @@ def Graphs(root, db):
         for i in mas:
             i.grid_remove()
         Reports(root, db)
+
     btn_back = tki.Button(
         root,
         text='Назад',
@@ -540,6 +571,7 @@ def Graphs(root, db):
         background='cyan1',
         fg='black',
         command=pred)
+
     def barplot(db):
         db_for_bar = db.groupby('ФИО', as_index=False) \
             .agg({'ПРОЕКТ': 'count'}) \
@@ -554,20 +586,21 @@ def Graphs(root, db):
         sns.barplot(x=db_for_bar['ФИО'], y=db_for_bar['Количество проектов']) \
             .set(title='\nКоличество проектов актёра')
         plt.xticks(rotation=45)
-        plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+
     barplot_btn = tki.Button(root,
-        text='Построить Барплот',
-        font=(
-            'Times',
-            14,
-            'bold'),
-        background='cyan1',
-        fg='black',
-        command=lambda:barplot(db))
+                             text='Построить Барплот',
+                             font=(
+                                 'Times',
+                                 14,
+                                 'bold'),
+                             background='cyan1',
+                             fg='black',
+                             command=lambda: barplot(db))
 
     def histplot(db):
         fig = plt.figure()
@@ -579,20 +612,22 @@ def Graphs(root, db):
         sns.histplot(x=db['ПРОЕКТ'], hue=db['ЖАНР']) \
             .set(title='\nКоличество актёров в проекте')
         plt.xticks(rotation=90)
-        plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+
     histplot_btn = tki.Button(root,
-                             text='Построить Хистплот',
-                             font=(
-                                 'Times',
-                                 14,
-                                 'bold'),
-                             background='cyan1',
-                             fg='black',
-                             command=lambda: histplot(db))
+                              text='Построить Хистплот',
+                              font=(
+                                  'Times',
+                                  14,
+                                  'bold'),
+                              background='cyan1',
+                              fg='black',
+                              command=lambda: histplot(db))
+
     def boxplot(db):
         fig = plt.figure()
         fig.patch.set_facecolor('none')
@@ -603,20 +638,22 @@ def Graphs(root, db):
         sns.boxplot(x=db['ЖАНР'], y=db['СТАЖ']) \
             .set(title='\nСтаж актёров по жанрам')
         plt.xticks(rotation=45)
-        plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+
     boxlot_btn = tki.Button(root,
                             text='Построить Боксплот',
                             font=(
-                              'Times',
-                              14,
-                              'bold'),
+                                'Times',
+                                14,
+                                'bold'),
                             background='cyan1',
                             fg='black',
                             command=lambda: boxplot(db))
+
     def scatter(db):
         fig = plt.figure()
         fig.patch.set_facecolor('none')
@@ -632,22 +669,25 @@ def Graphs(root, db):
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+
     scatter_btn = tki.Button(root,
-                            text='Построить Скаттер-плот',
-                            font=(
-                                'Times',
-                                14,
-                                'bold'),
-                            background='cyan1',
-                            fg='black',
-                            command=lambda: scatter(db))
-    btn_back.grid(column=0,row=0, ipadx=100)
-    barplot_btn.grid(column=0,row=1, ipadx=41)
-    histplot_btn.grid(column=0,row=2, ipadx=36)
-    boxlot_btn.grid(column=0,row=3, ipadx=36)
-    scatter_btn.grid(column=0,row=4, ipadx=18)
+                             text='Построить Скаттер-плот',
+                             font=(
+                                 'Times',
+                                 14,
+                                 'bold'),
+                             background='cyan1',
+                             fg='black',
+                             command=lambda: scatter(db))
+    btn_back.grid(column=0, row=0, ipadx=100)
+    barplot_btn.grid(column=0, row=1, ipadx=41)
+    histplot_btn.grid(column=0, row=2, ipadx=36)
+    boxlot_btn.grid(column=0, row=3, ipadx=36)
+    scatter_btn.grid(column=0, row=4, ipadx=18)
     massstart = [btn_back, barplot_btn, histplot_btn, boxlot_btn, scatter_btn]
-def RedactWindow(root,db):
+
+
+def RedactWindow(root, db):
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -657,6 +697,7 @@ def RedactWindow(root,db):
         for i in mas:
             i.grid_remove()
         DataWindow(root, db)
+
     btn_back = tki.Button(
         root,
         text='Назад',
@@ -682,9 +723,10 @@ def RedactWindow(root,db):
     tree_edit.grid(column=2, row=10, ipadx=200)
     verscrlbar.grid(column=3, row=10, ipady=86)
     tree_edit.configure(yscrollcommand=verscrlbar.set)
-    btn_back.grid(column=0,row=0)
+    btn_back.grid(column=0, row=0)
+
     def delete():
-        selected=tree_edit.selection()
+        selected = tree_edit.selection()
         for i in selected:
             tree_edit.delete(i)
 
@@ -698,5 +740,159 @@ def RedactWindow(root,db):
         background='cyan1',
         fg='black',
         command=delete)
-    btn_delete.grid(column=1,row=0)
+    btn_delete.grid(column=1, row=0)
     massstart = [btn_back, btn_delete]
+
+
+def AddWindow(root, db):
+    def pred():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        MainWind(root)
+
+    def add():
+        pass
+
+    btn = tki.Button(
+        root,
+        text='Назад',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=pred)
+    btn_add = tki.Button(
+        root,
+        text='Добавить',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=add)
+    btn_add.grid(column=0, row=1, ipadx=84)
+    text_fio = tki.Label(root,
+                         text="Введите ФИО",
+                         font=(
+                             'Times',
+                             14,
+                             'bold'),
+                         background='SkyBlue1',
+                         fg='black'
+                         )
+    text_fio.grid(column=1, row=1)
+    message_entry = tki.Entry(root,
+                              textvariable=tki.StringVar(),
+                              font=(
+                                  'Times',
+                                  14,
+                                  'bold'),
+                              background='cyan1',
+                              fg='black')
+    message_entry.grid(column=1, row=2)
+    text_date = tki.Label(root,
+                          text="Введите дату рождения актёра",
+                          font=(
+                              'Times',
+                              14,
+                              'bold'),
+                          background='SkyBlue1',
+                          fg='black'
+                          )
+    text_date.grid(column=1, row=3)
+    message_entry_date = tki.Entry(root,
+                                   textvariable=tki.StringVar(),
+                                   font=(
+                                       'Times',
+                                       14,
+                                       'bold'),
+                                   background='cyan1',
+                                   fg='black')
+    message_entry_date.grid(column=1, row=4)
+    text_sex = tki.Label(root,
+                         text="Введите пол",
+                         font=(
+                             'Times',
+                             14,
+                             'bold'),
+                         background='SkyBlue1',
+                         fg='black'
+                         )
+    text_sex.grid(column=1, row=5)
+    message_entry_sex = tki.Entry(root,
+                                  textvariable=tki.StringVar(),
+                                  font=(
+                                      'Times',
+                                      14,
+                                      'bold'),
+                                  background='cyan1',
+                                  fg='black')
+    message_entry_sex.grid(column=1, row=6)
+    text_years = tki.Label(root,
+                           text="Введите стаж актёра",
+                           font=(
+                               'Times',
+                               14,
+                               'bold'),
+                           background='SkyBlue1',
+                           fg='black'
+                           )
+    text_years.grid(column=1, row=7)
+    message_entry_years = tki.Entry(root,
+                                    textvariable=tki.StringVar(),
+                                    font=(
+                                        'Times',
+                                        14,
+                                        'bold'),
+                                    background='cyan1',
+                                    fg='black')
+    message_entry_years.grid(column=1, row=8)
+    text_project = tki.Label(root,
+                             text="Проект",
+                             font=(
+                                 'Times',
+                                 14,
+                                 'bold'),
+                             background='SkyBlue1',
+                             fg='black'
+                             )
+    text_project.grid(column=1, row=9)
+    message_entry_project = tki.Entry(root,
+                                      textvariable=tki.StringVar(),
+                                      font=(
+                                          'Times',
+                                          14,
+                                          'bold'),
+                                      background='cyan1',
+                                      fg='black')
+    message_entry_project.grid(column=1, row=10)
+    text_type = tki.Label(root,
+                          text="Введите жанр",
+                          font=(
+                              'Times',
+                              14,
+                              'bold'),
+                          background='SkyBlue1',
+                          fg='black'
+                          )
+    text_type.grid(column=1, row=11)
+    message_entry_type = tki.Entry(root,
+                                   textvariable=tki.StringVar(),
+                                   font=(
+                                       'Times',
+                                       14,
+                                       'bold'),
+                                   background='cyan1',
+                                   fg='black')
+    message_entry_type.grid(column=1, row=12)
+    btn.grid(column=0, row=0, ipadx=100)
+
+    massstart = [btn, message_entry, text_fio, message_entry_date, text_date, message_entry_sex, text_sex,
+                 message_entry_years, text_years, message_entry_project, text_project, message_entry_type, text_type,
+                 btn_add]
