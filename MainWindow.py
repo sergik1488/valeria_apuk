@@ -66,7 +66,7 @@ def MainWind(root):
             else:
                 i.grid()
         global db
-        db = pd.read_csv("ReadyBD.csv", sep=";")
+        db = pd.read_csv("SavedBD.csv", sep=";")
         DataWindow(root)
     def newwin():
         for i in massstart:
@@ -74,10 +74,10 @@ def MainWind(root):
                 i.grid_remove()
             else:
                 i.grid()
-        tabl1.append("tabl1.csv")
-        tabl2.append("tabl2.csv")
-        tabl3.append("tabl3.csv")
-        tabl4.append("tabl4.csv")
+        tabl1.append("Data/tabl1.csv")
+        tabl2.append("Data/tabl2.csv")
+        tabl3.append("Data/tabl3.csv")
+        tabl4.append("Data/tabl4.csv")
         global db
         db = pd.read_csv(tabl1[-1], sep=';') \
             .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
@@ -729,7 +729,7 @@ def RedactWindow(root):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        db.to_csv("ReadyBD.csv", sep=";",index=False)
+        db.to_csv("Output/SavedBD.csv", sep=";",index=False)
         DataWindow(root)
 
     def to_add():
