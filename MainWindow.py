@@ -260,6 +260,8 @@ def Reports(root, db):
                 i.grid_remove()
             else:
                 i.grid()
+        for i in mas:
+            i.grid_remove()
         DataWindow(root, tabl1[-1], tabl2[-1], tabl3[-1], tabl4[-1])
 
     btn = tki.Button(
@@ -280,6 +282,8 @@ def Reports(root, db):
                 i.grid_remove()
             else:
                 i.grid()
+        for i in mas:
+            i.grid_remove()
         simple_report(root, db)
 
     generate_pivot = tki.Button(root,
@@ -291,7 +295,7 @@ def Reports(root, db):
                                 background='cyan1',
                                 fg='black',
                                 command=lambda: create_pivot(db))
-    generate_pivot.grid(column=53, row=44)
+    generate_pivot.grid(column=2, row=1)
 
     def create_pivot(db):
 
@@ -305,6 +309,7 @@ def Reports(root, db):
         verscrlbar2 = tki.Scrollbar(root,
                                     orient="vertical",
                                     command=tree2.yview)
+
         tree2["columns"] = db_col
         tree2['show'] = 'headings'
         for i in range(len(db_col)):
@@ -312,10 +317,11 @@ def Reports(root, db):
             tree2.heading(db_col[i], text=str(db_col[i]))
         for k in range(len(pivot)):
             tree2.insert("", 'end', values=(list(pivot.iloc[k])))
-        tree2.grid(column=2, row=10, ipadx=200)
+        tree2.grid(column=5, row=10, ipadx=200)
         verscrlbar2.grid(column=3, row=10, ipady=86)
         tree2.configure(yscrollcommand=verscrlbar2.set)
-
+        mas.append(tree2)
+        mas.append(verscrlbar2)
     to_simple = tki.Button(root,
                            font=(
                                'Times',
@@ -325,7 +331,7 @@ def Reports(root, db):
                            fg='black',
                            text='Простой отчёт',
                            command=opensimple_report)
-    to_simple.grid(column=50, row=44, pady=40)
+    to_simple.grid(column=1, row=1, pady=40)
     massstart = [generate_pivot, to_simple]
 
 
