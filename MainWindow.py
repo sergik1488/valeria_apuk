@@ -718,7 +718,7 @@ def RedactWindow(root):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        db.to_csv("ReadyBD.csv", sep=";")
+        db.to_csv("ReadyBD.csv", sep=";",index=False)
         DataWindow(root)
 
     def to_add():
@@ -833,6 +833,25 @@ def AddWindow(root):
         fg='black',
         command=add)
     btn_add.grid(column=0, row=1, ipadx=84)
+    text_number = tki.Label(root,
+                            text="Введите номер актёра",
+                            font=(
+                                'Times',
+                                14,
+                                'bold'),
+                            background='SkyBlue1',
+                            fg='black'
+                            )
+    text_number_entry = tki.Entry(root,
+                                  textvariable=tki.StringVar(),
+                                  font=(
+                                      'Times',
+                                      14,
+                                      'bold'),
+                                  background='cyan1',
+                                  fg='black')
+    text_number.grid(column=1, row=0)
+    text_number_entry.grid(column=1, row=1)
     text_fio = tki.Label(root,
                          text="Введите ФИО",
                          font=(
@@ -842,7 +861,7 @@ def AddWindow(root):
                          background='SkyBlue1',
                          fg='black'
                          )
-    text_fio.grid(column=1, row=1)
+    text_fio.grid(column=1, row=2)
     message_entry = tki.Entry(root,
                               textvariable=tki.StringVar(),
                               font=(
@@ -851,7 +870,7 @@ def AddWindow(root):
                                   'bold'),
                               background='cyan1',
                               fg='black')
-    message_entry.grid(column=1, row=2)
+    message_entry.grid(column=1, row=3)
     text_date = tki.Label(root,
                           text="Введите дату рождения актёра",
                           font=(
@@ -861,7 +880,7 @@ def AddWindow(root):
                           background='SkyBlue1',
                           fg='black'
                           )
-    text_date.grid(column=1, row=3)
+    text_date.grid(column=1, row=4)
     message_entry_date = tki.Entry(root,
                                    textvariable=tki.StringVar(),
                                    font=(
@@ -870,7 +889,7 @@ def AddWindow(root):
                                        'bold'),
                                    background='cyan1',
                                    fg='black')
-    message_entry_date.grid(column=1, row=4)
+    message_entry_date.grid(column=1, row=5)
     text_sex = tki.Label(root,
                          text="Введите пол",
                          font=(
@@ -880,7 +899,7 @@ def AddWindow(root):
                          background='SkyBlue1',
                          fg='black'
                          )
-    text_sex.grid(column=1, row=5)
+    text_sex.grid(column=1, row=6)
     message_entry_sex = tki.Entry(root,
                                   textvariable=tki.StringVar(),
                                   font=(
@@ -889,7 +908,7 @@ def AddWindow(root):
                                       'bold'),
                                   background='cyan1',
                                   fg='black')
-    message_entry_sex.grid(column=1, row=6)
+    message_entry_sex.grid(column=1, row=7)
     text_years = tki.Label(root,
                            text="Введите стаж актёра",
                            font=(
@@ -899,7 +918,7 @@ def AddWindow(root):
                            background='SkyBlue1',
                            fg='black'
                            )
-    text_years.grid(column=1, row=7)
+    text_years.grid(column=1, row=8)
     message_entry_years = tki.Entry(root,
                                     textvariable=tki.StringVar(),
                                     font=(
@@ -908,7 +927,7 @@ def AddWindow(root):
                                         'bold'),
                                     background='cyan1',
                                     fg='black')
-    message_entry_years.grid(column=1, row=8)
+    message_entry_years.grid(column=1, row=9)
     text_project = tki.Label(root,
                              text="Проект",
                              font=(
@@ -918,7 +937,7 @@ def AddWindow(root):
                              background='SkyBlue1',
                              fg='black'
                              )
-    text_project.grid(column=1, row=9)
+    text_project.grid(column=1, row=10)
     message_entry_project = tki.Entry(root,
                                       textvariable=tki.StringVar(),
                                       font=(
@@ -927,7 +946,7 @@ def AddWindow(root):
                                           'bold'),
                                       background='cyan1',
                                       fg='black')
-    message_entry_project.grid(column=1, row=10)
+    message_entry_project.grid(column=1, row=11)
     text_type = tki.Label(root,
                           text="Введите жанр",
                           font=(
@@ -937,7 +956,7 @@ def AddWindow(root):
                           background='SkyBlue1',
                           fg='black'
                           )
-    text_type.grid(column=1, row=11)
+    text_type.grid(column=1, row=12)
     message_entry_type = tki.Entry(root,
                                    textvariable=tki.StringVar(),
                                    font=(
@@ -946,9 +965,9 @@ def AddWindow(root):
                                        'bold'),
                                    background='cyan1',
                                    fg='black')
-    message_entry_type.grid(column=1, row=12)
+    message_entry_type.grid(column=1, row=13)
     btn.grid(column=0, row=0, ipadx=100)
     global massstart
     massstart = [btn, message_entry, text_fio, message_entry_date, text_date, message_entry_sex, text_sex,
                  message_entry_years, text_years, message_entry_project, text_project, message_entry_type, text_type,
-                 btn_add]
+                 btn_add,text_number,text_number_entry]
