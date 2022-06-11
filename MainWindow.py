@@ -233,7 +233,7 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
                             background='cyan1',
                             fg='black',
                             command=to_window_report)
-    to_reports.grid(column=0, row=1, ipadx=80)
+    to_reports.grid(column=0, row=1, ipadx=81)
     def to_redact():
         for i in massstart:
             if i.winfo_viewable():
@@ -252,7 +252,7 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
         fg='black',
         command=to_redact
     )
-    btn_redact.grid(column=2, row=1)
+    btn_redact.grid(column=0, row=2, ipadx=4)
     db = pd.read_csv(tabl1, sep=';') \
         .merge(pd.read_csv(tabl2, sep=';'), on='Н_ПРО') \
         .merge(pd.read_csv(tabl3, sep=';'), on='Н_ПРО') \
@@ -273,7 +273,7 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
     tree.grid(column=2, row=10, ipadx=200)
     verscrlbar.grid(column=3, row=10, ipady=86)
     tree.configure(yscrollcommand=verscrlbar.set)
-    massstart = [btn, to_reports, verscrlbar, tree]
+    massstart = [btn, to_reports, verscrlbar, tree, btn_redact]
 
 
 def Reports(root, db):
@@ -308,6 +308,8 @@ def Reports(root, db):
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
     def stats_report(db):
+        for i in mas:
+            i.grid_remove()
         genre_min = db.groupby('ЖАНР', as_index=False) \
             .agg({'СТАЖ': 'min'}) \
             .rename(columns={'СТАЖ': 'Минимальный стаж'})
@@ -331,6 +333,7 @@ def Reports(root, db):
         db_col = list(genre_full.columns)
         tree3["columns"] = db_col
         tree3['show'] = 'headings'
+        mas.append(tree3)
         for i in range(len(db_col)):
             tree3.column(db_col[i], width=15, anchor='c')
             tree3.heading(db_col[i], text=str(db_col[i]))
@@ -346,16 +349,7 @@ def Reports(root, db):
         background='cyan1',
         fg='black',
         command=lambda:stats_report(db))
-    btn_stats.grid(column=0, row=10, ipadx=100)
-    def opensimple_report():
-        for i in massstart:
-            if i.winfo_viewable():
-                i.grid_remove()
-            else:
-                i.grid()
-        for i in mas:
-            i.grid_remove()
-        simple_report(root, db)
+    btn_stats.grid(column=1, row=4)
     def opensimple_report():
         for i in massstart:
             if i.winfo_viewable():
@@ -378,7 +372,8 @@ def Reports(root, db):
     generate_pivot.grid(column=1, row=2, ipadx=27)
 
     def create_pivot(db):
-
+        for i in mas:
+            i.grid_remove()
         pivot = db.groupby(['ФИО', 'ЖАНР'], as_index=False) \
             .agg({'ПРОЕКТ': 'count'}) \
             .pivot('ФИО', 'ЖАНР', 'ПРОЕКТ') \
@@ -422,7 +417,7 @@ def Reports(root, db):
                            text='К графикам',
                            command=to_Graphs)
     Graph_btn.grid(column=1,row=3, ipadx=50)
-    massstart = [btn, generate_pivot, to_simple,Graph_btn]
+    massstart = [btn, generate_pivot, to_simple,Graph_btn, btn_stats]
 
 
 def simple_report(root, db):
@@ -697,3 +692,4 @@ def RedactWindow(root,db):
         fg='black',
         command=delete)
     btn_delete.grid(column=1,row=0)
+    massstart = [btn_back, btn_delete]
