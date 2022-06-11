@@ -289,7 +289,46 @@ def Reports(root, db):
         fg='black',
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
-
+    def stats_report(db):
+        genre_min = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'min'}) \
+            .rename(columns={'СТАЖ': 'Минимальный стаж'})
+        genre_max = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'max'}) \
+            .rename(columns={'СТАЖ': 'Максимальный стаж'})
+        genre_std = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'std'}) \
+            .rename(columns={'СТАЖ': 'Стандартное отклонение стажа'})
+        genre_median = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'median'}) \
+            .rename(columns={'СТАЖ': 'Медиана стажа'})
+        genre_full = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'mean'}) \
+            .rename(columns={'СТАЖ': 'Средний стаж'}) \
+            .merge(genre_max, on='ЖАНР') \
+            .merge(genre_min, on='ЖАНР') \
+            .merge(genre_std, on='ЖАНР') \
+            .merge(genre_median, on='ЖАНР')
+        tree3 = Treeview(root)
+        db_col = list(genre_full.columns)
+        tree3["columns"] = db_col
+        tree3['show'] = 'headings'
+        for i in range(len(db_col)):
+            tree3.column(db_col[i], width=15, anchor='c')
+            tree3.heading(db_col[i], text=str(db_col[i]))
+        for k in range(len(genre_full)):
+            tree3.insert("", 'end', values=(list(genre_full.iloc[k])))
+        tree3.grid(column=5, row=10, ipadx=200)
+    btn_stats = tki.Button(root,
+        text='Простая статистика БД',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=lambda:stats_report(db))
+    btn_stats.grid(column=0, row=10, ipadx=100)
     def opensimple_report():
         for i in massstart:
             if i.winfo_viewable():
@@ -356,7 +395,7 @@ def Reports(root, db):
                            text='К графикам',
                            command=to_Graphs)
     Graph_btn.grid(column=1,row=2)
-    massstart = [btn, generate_pivot, to_simple,Graph_btn]
+    massstart = [btn, generate_pivot, to_simple,Graph_btn,btn_stats]
 
 
 def simple_report(root, db):
