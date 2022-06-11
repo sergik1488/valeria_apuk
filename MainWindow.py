@@ -1,8 +1,9 @@
 import tkinter as tki
 import tkinter.filedialog as fd
 from tkinter.ttk import Treeview
-
+from PIL import ImageTk, Image
 import pandas as pd
+import time
 import numpy as np
 import os.path
 import sys
@@ -457,6 +458,8 @@ def Graphs(root, db):
                 i.grid_remove()
             else:
                 i.grid()
+        for i in mas:
+            i.grid_remove()
         Reports(root, db)
     btn_back = tki.Button(
         root,
@@ -483,6 +486,11 @@ def Graphs(root, db):
             .set(title='\nКоличество проектов актёра')
         plt.xticks(rotation=45)
         plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+
+        img = ImageTk.PhotoImage(Image.open("graph.png"))
+        panel = tki.Label(root, image=img, background="SkyBlue1")
+        panel.grid(column=3, row=6, padx=50)
+        mas.append(panel)
     barplot_btn = tki.Button(root,
         text='Построить Барплот',
         font=(
@@ -504,7 +512,10 @@ def Graphs(root, db):
             .set(title='\nКоличество актёров в проекте')
         plt.xticks(rotation=90)
         plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
-
+        img = ImageTk.PhotoImage(Image.open("graph1.png"))
+        panel = tki.Label(root, image=img, background="SkyBlue1")
+        panel.grid(column=3, row=6, padx=50)
+        mas.append(panel)
     histplot_btn = tki.Button(root,
                              text='Построить Хистплот',
                              font=(
@@ -525,6 +536,10 @@ def Graphs(root, db):
             .set(title='\nСтаж актёров по жанрам')
         plt.xticks(rotation=45)
         plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+        img = ImageTk.PhotoImage(Image.open("graph.png"))
+        panel = tki.Label(root, image=img, background="SkyBlue1")
+        panel.grid(column=3, row=6, padx=50)
+        mas.append(panel)
     boxlot_btn = tki.Button(root,
                             text='Построить Боксплот',
                             font=(
@@ -545,7 +560,10 @@ def Graphs(root, db):
             .set(title='\nВзаимосвязь даты рождения и стажа актёров')
         plt.xticks(rotation=45)
         plt.savefig('graph.png', bbox_inches='tight', dpi=70)
-
+        img = ImageTk.PhotoImage(Image.open("graph.png"))
+        panel = tki.Label(root, image=img, background="SkyBlue1")
+        panel.grid(column=3, row=6, padx=50)
+        mas.append(panel)
     scatter_btn = tki.Button(root,
                             text='Построить Скаттер-плот',
                             font=(
