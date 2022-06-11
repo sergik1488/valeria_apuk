@@ -1,3 +1,4 @@
+import os
 import tkinter as tki
 import tkinter.filedialog as fd
 from tkinter.ttk import Treeview
@@ -303,7 +304,7 @@ def DataWindow(root):
     tree["columns"] = db_col
     tree['show'] = 'headings'
     for i in range(len(db_col)):
-        tree.column(db_col[i], width=15, anchor='c')
+        tree.column(db_col[i], width=25, anchor='c')
         tree.heading(db_col[i], text=str(db_col[i]))
     for k in range(len(db)):
         tree.insert("", 'end', values=(list(db.iloc[k])))
@@ -371,13 +372,16 @@ def Reports(root):
             .merge(genre_min, on='ЖАНР') \
             .merge(genre_std, on='ЖАНР') \
             .merge(genre_median, on='ЖАНР')
+        genre_full['Стандартное отклонение стажа'] = round(genre_full['Стандартное отклонение стажа'],2)
+        genre_full['Медиана стажа'] = round(genre_full['Медиана стажа'], 2)
+        genre_full['Средний стаж'] = round(genre_full['Средний стаж'], 2)
         tree3 = Treeview(root)
         db_col = list(genre_full.columns)
         tree3["columns"] = db_col
         tree3['show'] = 'headings'
         mas.append(tree3)
         for i in range(len(db_col)):
-            tree3.column(db_col[i], width=15, anchor='c')
+            tree3.column(db_col[i], width=25, anchor='c')
             tree3.heading(db_col[i], text=str(db_col[i]))
         for k in range(len(genre_full)):
             tree3.insert("", 'end', values=(list(genre_full.iloc[k])))
@@ -421,7 +425,7 @@ def Reports(root):
         tree2["columns"] = db_col
         tree2['show'] = 'headings'
         for i in range(len(db_col)):
-            tree2.column(db_col[i], width=15, anchor='c')
+            tree2.column(db_col[i], width=25, anchor='c')
             tree2.heading(db_col[i], text=str(db_col[i]))
         for k in range(len(pivot)):
             tree2.insert("", 'end', values=(list(pivot.iloc[k])))
@@ -603,11 +607,13 @@ def Graphs(root):
         sns.barplot(x=db_for_bar['ФИО'], y=db_for_bar['Количество проектов']) \
             .set(title='\nКоличество проектов актёра')
         plt.xticks(rotation=45)
-        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+        if not os.path.exists('Graphs'):
+            os.mkdir('Graphs')
+        plt.savefig('Graphs/bar_plot.png')
 
     barplot_btn = tki.Button(root,
                              text='Построить Барплот',
@@ -622,7 +628,7 @@ def Graphs(root):
     def histplot():
         global db
         fig = plt.figure()
-        fig.patch.set_facecolor('none')
+        fig.patch.set_facecolor('blue')
         fig.patch.set_alpha(0.6)
         ax = fig.add_subplot(111)
         ax.patch.set_facecolor('none')
@@ -630,11 +636,13 @@ def Graphs(root):
         sns.histplot(x=db['ПРОЕКТ'], hue=db['ЖАНР']) \
             .set(title='\nКоличество актёров в проекте')
         plt.xticks(rotation=90)
-        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+        if not os.path.exists('Graphs'):
+            os.mkdir('Graphs')
+        plt.savefig('Graphs/hist_plot.png')
 
     histplot_btn = tki.Button(root,
                               text='Построить Хистплот',
@@ -649,7 +657,7 @@ def Graphs(root):
     def boxplot():
         global db
         fig = plt.figure()
-        fig.patch.set_facecolor('none')
+        fig.patch.set_facecolor('blue')
         fig.patch.set_alpha(0.6)
         ax = fig.add_subplot(111)
         ax.patch.set_facecolor('none')
@@ -657,11 +665,13 @@ def Graphs(root):
         sns.boxplot(x=db['ЖАНР'], y=db['СТАЖ']) \
             .set(title='\nСтаж актёров по жанрам')
         plt.xticks(rotation=45)
-        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
+        if not os.path.exists('Graphs'):
+            os.mkdir('Graphs')
+        plt.savefig('Graphs/box_plot.png')
 
     boxlot_btn = tki.Button(root,
                             text='Построить Боксплот',
@@ -676,7 +686,7 @@ def Graphs(root):
     def scatter():
         global db
         fig = plt.figure()
-        fig.patch.set_facecolor('none')
+        fig.patch.set_facecolor('blue')
         fig.patch.set_alpha(0.6)
         ax = fig.add_subplot(111)
         ax.patch.set_facecolor('none')
@@ -684,12 +694,13 @@ def Graphs(root):
         sns.scatterplot(x=db['Д.Р.'], y=db['СТАЖ'], hue=db['ПОЛ']) \
             .set(title='\nВзаимосвязь даты рождения и стажа актёров')
         plt.xticks(rotation=45)
-        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
         plt.tight_layout()
         canvas = FigureCanvasTkAgg(fig, root)
         canvas.get_tk_widget().grid(row=6, column=3)
         mas.append(canvas.get_tk_widget())
-
+        if not os.path.exists('Graphs'):
+            os.mkdir('Graphs')
+        plt.savefig('Graphs/Scatter_plot.png')
     scatter_btn = tki.Button(root,
                              text='Построить Скаттер-плот',
                              font=(
@@ -743,7 +754,7 @@ def RedactWindow(root):
     btn_add.grid(column=0, row=5, ipadx=21)
     btn_back = tki.Button(
         root,
-        text='Назад',
+        text='Назад и сохранить БД',
         font=(
             'Times',
             14,
@@ -759,7 +770,7 @@ def RedactWindow(root):
     tree_edit["columns"] = db_col
     tree_edit['show'] = 'headings'
     for i in range(len(db_col)):
-        tree_edit.column(db_col[i], width=15, anchor='c')
+        tree_edit.column(db_col[i], width=25, anchor='c')
         tree_edit.heading(db_col[i], text=str(db_col[i]))
     for k in range(len(db)):
         tree_edit.insert("", 'end', values=(list(db.iloc[k])))
@@ -809,9 +820,26 @@ def AddWindow(root,tree):
         RedactWindow(root)
 
     def add(tree):
+        global db
+        values = []
+        values.append(text_number_entry.get())
+        values.append(message_entry.get())
+        values.append(message_entry_date.get())
+        values.append(message_entry_sex.get())
+        values.append(message_entry_years.get())
+        values.append(message_entry_project.get())
+        values.append(message_entry_type.get())
+        tree.insert("", 'end', values=values)
+        full_data = []
+        new_db = pd.DataFrame(columns=['Н_АКТЁР', 'ФИО', 'Д.Р.', 'ПОЛ', 'СТАЖ', 'ПРОЕКТ', 'ЖАНР'])
         for line in tree.get_children():
             for value in tree.item(line)['values']:
-                print(value)
+                full_data.append(value)
+        for i in range(0, len(full_data), 7):
+            new_row = {'Н_АКТЁР': full_data[i], 'ФИО': full_data[i + 1], 'Д.Р.': full_data[i + 2],
+                       'ПОЛ': full_data[i + 3], 'СТАЖ': full_data[i + 4], 'ПРОЕКТ': full_data[i + 5], 'ЖАНР': full_data[i + 6]}
+            new_db = new_db.append(new_row, ignore_index=True)
+        db = new_db
 
     btn = tki.Button(
         root,
