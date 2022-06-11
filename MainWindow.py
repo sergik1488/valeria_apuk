@@ -263,26 +263,7 @@ def DataWindow(root, db):
         command=to_redact
     )
 
-    def to_add():
-        for i in massstart:
-            if i.winfo_viewable():
-                i.grid_remove()
-            else:
-                i.grid()
-        AddWindow(root, db)
 
-    btn_add = tki.Button(
-        root,
-        text='Добавить в базу данных',
-        font=(
-            'Times',
-            14,
-            'bold'),
-        background='cyan1',
-        fg='black',
-        command=to_add
-    )
-    btn_add.grid(column=0, row=5, ipadx=21)
     btn_redact.grid(column=0, row=2, ipadx=4)
     db = pd.read_csv(tabl1[-1], sep=';') \
         .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
@@ -304,7 +285,7 @@ def DataWindow(root, db):
     tree.grid(column=2, row=10, ipadx=200)
     verscrlbar.grid(column=3, row=10, ipady=86)
     tree.configure(yscrollcommand=verscrlbar.set)
-    massstart = [btn, to_reports, verscrlbar, tree, btn_redact, btn_add]
+    massstart = [btn, to_reports, verscrlbar, tree, btn_redact]
 
 
 def Reports(root, db):
@@ -697,7 +678,26 @@ def RedactWindow(root, db):
         for i in mas:
             i.grid_remove()
         DataWindow(root, db)
+    def to_add():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        AddWindow(root, db)
 
+    btn_add = tki.Button(
+        root,
+        text='Добавить в базу данных',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=to_add
+    )
+    btn_add.grid(column=0, row=5, ipadx=21)
     btn_back = tki.Button(
         root,
         text='Назад',
@@ -723,7 +723,7 @@ def RedactWindow(root, db):
     tree_edit.grid(column=2, row=10, ipadx=200)
     verscrlbar.grid(column=3, row=10, ipady=86)
     tree_edit.configure(yscrollcommand=verscrlbar.set)
-    btn_back.grid(column=0, row=0)
+    btn_back.grid(column=0, row=0, ipadx=100)
 
     def delete():
         selected = tree_edit.selection()
@@ -750,7 +750,7 @@ def RedactWindow(root, db):
         fg='black',
         command=delete)
     btn_delete.grid(column=1, row=0)
-    massstart = [btn_back, btn_delete]
+    massstart = [btn_back, btn_delete, btn_add, tree_edit, verscrlbar]
 
 
 def AddWindow(root, db):
@@ -760,7 +760,7 @@ def AddWindow(root, db):
                 i.grid_remove()
             else:
                 i.grid()
-        MainWind(root)
+        RedactWindow(root, db)
 
     def add():
         pass
@@ -775,6 +775,7 @@ def AddWindow(root, db):
         background='cyan1',
         fg='black',
         command=pred)
+    btn.grid(column=0, row=0, ipadx=100)
     btn_add = tki.Button(
         root,
         text='Добавить',
@@ -901,7 +902,7 @@ def AddWindow(root, db):
                                    fg='black')
     message_entry_type.grid(column=1, row=12)
     btn.grid(column=0, row=0, ipadx=100)
-
+    global massstart
     massstart = [btn, message_entry, text_fio, message_entry_date, text_date, message_entry_sex, text_sex,
                  message_entry_years, text_years, message_entry_project, text_project, message_entry_type, text_type,
                  btn_add]
