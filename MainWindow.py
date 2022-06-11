@@ -265,7 +265,7 @@ def Reports(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-    Graphs(root,db)
+        Graphs(root,db)
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -526,14 +526,14 @@ def Graphs(root, db):
         plt.xticks(rotation=45)
         plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
     boxlot_btn = tki.Button(root,
-                              text='Построить Боксплот',
-                              font=(
-                                  'Times',
-                                  14,
-                                  'bold'),
-                              background='cyan1',
-                              fg='black',
-                              command=lambda: boxplot(db))
+                            text='Построить Боксплот',
+                            font=(
+                              'Times',
+                              14,
+                              'bold'),
+                            background='cyan1',
+                            fg='black',
+                            command=lambda: boxplot(db))
     def scatter(db):
         fig = plt.figure()
         fig.patch.set_facecolor('none')
@@ -556,7 +556,7 @@ def Graphs(root, db):
                             fg='black',
                             command=lambda: scatter(db))
     btn_back.grid(column=0,row=0)
-    barplot_btn.grid(column=1,row=0)
-    histplot_btn.grid(column=2,row=0)
-    boxlot_btn.grid(column=3,row=0)
-    scatter_btn.grid(column=4,row=0)
+    barplot_btn.grid(column=0,row=1)
+    histplot_btn.grid(column=0,row=2)
+    boxlot_btn.grid(column=0,row=3)
+    scatter_btn.grid(column=0,row=4)
