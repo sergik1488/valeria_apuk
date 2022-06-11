@@ -9,7 +9,7 @@ import sys
 from functools import partial
 
 massstart = []
-
+mas = []
 
 def start(root):
     def opennextwindov():
@@ -234,7 +234,7 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
         .merge(pd.read_csv(tabl2, sep=';'), on='Н_ПРО') \
         .merge(pd.read_csv(tabl3, sep=';'), on='Н_ПРО') \
         .merge(pd.read_csv(tabl4, sep=';'), on='Н_ЖАНР') \
-        .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР',ascending=True)
+        .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
     tree = Treeview(root)
     db_col = list(db.columns)
     verscrlbar = tki.Scrollbar(root,
@@ -273,6 +273,7 @@ def Reports(root, db):
         fg='black',
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
+
     def opensimple_report():
         for i in massstart:
             if i.winfo_viewable():
@@ -280,6 +281,7 @@ def Reports(root, db):
             else:
                 i.grid()
         simple_report(root, db)
+
     generate_pivot = tki.Button(root,
                                 text="Сводная таблица",
                                 font=(
@@ -291,20 +293,18 @@ def Reports(root, db):
                                 command=lambda: create_pivot(db))
     generate_pivot.grid(column=53, row=44)
 
-
-
     def create_pivot(db):
 
         pivot = db.groupby(['ФИО', 'ЖАНР'], as_index=False) \
-              .agg({'ПРОЕКТ': 'count'}) \
-              .pivot('ФИО', 'ЖАНР', 'ПРОЕКТ') \
-              .fillna(0)\
-              .reset_index()
+            .agg({'ПРОЕКТ': 'count'}) \
+            .pivot('ФИО', 'ЖАНР', 'ПРОЕКТ') \
+            .fillna(0) \
+            .reset_index()
         tree2 = Treeview(root)
         db_col = list(pivot.columns)
         verscrlbar2 = tki.Scrollbar(root,
-                                   orient="vertical",
-                                   command=tree2.yview)
+                                    orient="vertical",
+                                    command=tree2.yview)
         tree2["columns"] = db_col
         tree2['show'] = 'headings'
         for i in range(len(db_col)):
@@ -318,15 +318,16 @@ def Reports(root, db):
 
     to_simple = tki.Button(root,
                            font=(
-                                'Times',
-                                14,
-                                'bold'),
+                               'Times',
+                               14,
+                               'bold'),
                            background='cyan1',
                            fg='black',
                            text='Простой отчёт',
                            command=opensimple_report)
     to_simple.grid(column=50, row=44, pady=40)
     massstart = [generate_pivot, to_simple]
+
 
 def simple_report(root, db):
     def pred():
@@ -335,8 +336,21 @@ def simple_report(root, db):
                 i.grid_remove()
             else:
                 i.grid()
+        for i in mas:
+            i.grid_remove()
         Reports(root, db)
+
+    def clean(db):
+        for i in mas:
+            i.grid_remove()
+        search_simple(db)
     def search_simple(db=None):
+        tree3 = Treeview(root)
+        verscrlbar2 = tki.Scrollbar(root,
+                                    orient="vertical",
+                                    command=tree3.yview)
+        mas.append(tree3)
+        mas.append(verscrlbar2)
         Needed_columns = ['Н_АКТЁР']
         if bolcb2.get() == True:
             Needed_columns.append(cb2.cget('text'))
@@ -351,41 +365,41 @@ def simple_report(root, db):
         if bolcb7.get() == True:
             Needed_columns.append(cb7.cget('text'))
 
+
         db_simple = db[Needed_columns]
-        tree3 = Treeview(root)
+
         db_col = list(db_simple.columns)
-        verscrlbar2 = tki.Scrollbar(root,
-                                    orient="vertical",
-                                    command=tree3.yview)
         tree3["columns"] = db_col
         tree3['show'] = 'headings'
         for i in range(len(db_col)):
-            tree3.column(db_col[i], width=15, anchor='c')
+            tree3.column(db_col[i], width=50, anchor='c', stretch=False)
             tree3.heading(db_col[i], text=str(db_col[i]))
         for k in range(len(db_simple)):
+
             tree3.insert("", 'end', values=(list(db_simple.iloc[k])))
-        tree3.grid(column=2, row=10, ipadx=200)
+        tree3.grid(column=2, row=10)
         verscrlbar2.grid(column=3, row=10, ipady=86)
         tree3.configure(yscrollcommand=verscrlbar2.set)
 
     bolcb2 = tki.BooleanVar()
-    cb2 = tki.Checkbutton(text="ФИО", font=('Times', 14,'bold'), background='SkyBlue1', variable=bolcb2)
+    cb2 = tki.Checkbutton(text="ФИО", font=('Times', 14, 'bold'), background='SkyBlue1', variable=bolcb2)
     bolcb3 = tki.BooleanVar()
-    cb3 = tki.Checkbutton(text="Д.Р.", font=('Times', 14,'bold'), background='SkyBlue1', variable=bolcb3)
+    cb3 = tki.Checkbutton(text="Д.Р.", font=('Times', 14, 'bold'), background='SkyBlue1', variable=bolcb3)
     bolcb4 = tki.BooleanVar()
-    cb4 = tki.Checkbutton(text="ПОЛ", font=('Times', 14,'bold'), background='SkyBlue1', variable=bolcb4)
+    cb4 = tki.Checkbutton(text="ПОЛ", font=('Times', 14, 'bold'), background='SkyBlue1', variable=bolcb4)
     bolcb5 = tki.BooleanVar()
-    cb5 = tki.Checkbutton(text="СТАЖ", font=('Times', 14,'bold'), background='SkyBlue1', variable=bolcb5)
+    cb5 = tki.Checkbutton(text="СТАЖ", font=('Times', 14, 'bold'), background='SkyBlue1', variable=bolcb5)
     bolcb6 = tki.BooleanVar()
-    cb6 = tki.Checkbutton(text="ПРОЕКТ", font=('Times', 14,'bold'), background='SkyBlue1', variable=bolcb6)
+    cb6 = tki.Checkbutton(text="ПРОЕКТ", font=('Times', 14, 'bold'), background='SkyBlue1', variable=bolcb6)
     bolcb7 = tki.BooleanVar()
-    cb7 = tki.Checkbutton(text="ЖАНР", font=('Times', 14,'bold'), background='SkyBlue1', variable=bolcb7)
+    cb7 = tki.Checkbutton(text="ЖАНР", font=('Times', 14, 'bold'), background='SkyBlue1', variable=bolcb7)
     cb2.grid(column=0, row=2, sticky='W')
     cb3.grid(column=0, row=3, sticky='W')
     cb4.grid(column=0, row=4, sticky='W')
     cb5.grid(column=0, row=5, sticky='W')
     cb6.grid(column=0, row=6, sticky='W')
     cb7.grid(column=0, row=7, sticky='W')
+
     search = tki.Button(root,
                         text="Искать",
                         font=(
@@ -394,7 +408,7 @@ def simple_report(root, db):
                             'bold'),
                         background='cyan1',
                         fg='black',
-                        command=lambda: search_simple(db))
+                        command=lambda: clean(db))
     search.grid(column=1, row=1)
     btn = tki.Button(
         root,
