@@ -709,6 +709,7 @@ def Graphs(root):
 
 def RedactWindow(root):
     global db
+
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -719,6 +720,7 @@ def RedactWindow(root):
             i.grid_remove()
         db.to_csv("ReadyBD.csv", sep=";")
         DataWindow(root)
+
     def to_add():
         for i in massstart:
             if i.winfo_viewable():
