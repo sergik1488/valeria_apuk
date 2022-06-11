@@ -727,7 +727,7 @@ def RedactWindow(root):
                 i.grid_remove()
             else:
                 i.grid()
-        AddWindow(root)
+        AddWindow(root,tree_edit)
 
     btn_add = tki.Button(
         root,
@@ -797,7 +797,7 @@ def RedactWindow(root):
     massstart = [btn_back, btn_delete, btn_add, tree_edit, verscrlbar]
 
 
-def AddWindow(root):
+def AddWindow(root,tree):
     global db
 
     def pred():
@@ -808,8 +808,10 @@ def AddWindow(root):
                 i.grid()
         RedactWindow(root)
 
-    def add():
-        pass
+    def add(tree):
+        for line in tree.get_children():
+            for value in tree.item(line)['values']:
+                print(value)
 
     btn = tki.Button(
         root,
@@ -831,7 +833,7 @@ def AddWindow(root):
             'bold'),
         background='cyan1',
         fg='black',
-        command=add)
+        command=lambda:add(tree))
     btn_add.grid(column=0, row=1, ipadx=84)
     text_number = tki.Label(root,
                             text="Введите номер актёра",
