@@ -4,17 +4,19 @@ from tkinter.ttk import Treeview
 import pandas as pd
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
-import os.path
-import sys
-
 from matplotlib import pyplot as plt
 import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+
 
 massstart = []
 mas = []
-
+db = pd.DataFrame()
 
 def start(root):
+
     def opennextwindov():
         for i in massstart:
             if i.winfo_viewable():
@@ -54,6 +56,7 @@ tabl4 = []
 
 
 def MainWind(root):
+    global db
     def newwin():
         for i in massstart:
             if i.winfo_viewable():
@@ -64,12 +67,13 @@ def MainWind(root):
         tabl2.append("tabl2.csv")
         tabl3.append("tabl3.csv")
         tabl4.append("tabl4.csv")
+        global db
         db = pd.read_csv(tabl1[-1], sep=';') \
             .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
             .merge(pd.read_csv(tabl3[-1], sep=';'), on='Н_ПРО') \
             .merge(pd.read_csv(tabl4[-1], sep=';'), on='Н_ЖАНР') \
             .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
-        DataWindow(root, db)
+        DataWindow(root)
 
     def pred():
         for i in massstart:
@@ -88,12 +92,14 @@ def MainWind(root):
                     i.grid_remove()
                 else:
                     i.grid()
+            global db
+
             db = pd.read_csv(tabl1[-1], sep=';') \
                 .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
                 .merge(pd.read_csv(tabl3[-1], sep=';'), on='Н_ПРО') \
                 .merge(pd.read_csv(tabl4[-1], sep=';'), on='Н_ЖАНР') \
                 .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
-            DataWindow(root, db)
+            DataWindow(root)
 
     def choose_file():
         filename = fd.askopenfilename(title="Открыть файл", initialdir="/", filetypes=(("CSV файл", "*.csv"),))
@@ -203,7 +209,8 @@ def MainWind(root):
     massstart = [btn, btnchoose1, lbl1, btnchoose2, btnchoose3, btnchoose4, btnusingready, btnusingready1]
 
 
-def DataWindow(root, db):
+def DataWindow(root):
+    global db
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -230,7 +237,7 @@ def DataWindow(root, db):
                 i.grid_remove()
             else:
                 i.grid()
-        Reports(root, db)
+        Reports(root)
 
     to_reports = tki.Button(root,
                             text='К отчётам',
@@ -249,7 +256,7 @@ def DataWindow(root, db):
                 i.grid_remove()
             else:
                 i.grid()
-        RedactWindow(root, db)
+        RedactWindow(root)
 
     btn_redact = tki.Button(
         root,
@@ -264,12 +271,8 @@ def DataWindow(root, db):
     )
 
 
+
     btn_redact.grid(column=0, row=2, ipadx=4)
-    db = pd.read_csv(tabl1[-1], sep=';') \
-        .merge(pd.read_csv(tabl2[-1], sep=';'), on='Н_ПРО') \
-        .merge(pd.read_csv(tabl3[-1], sep=';'), on='Н_ПРО') \
-        .merge(pd.read_csv(tabl4[-1], sep=';'), on='Н_ЖАНР') \
-        .drop(columns=['Н_ПРО', 'Н_ЖАНР']).sort_values(by='Н_АКТЁР', ascending=True)
     tree = Treeview(root)
     db_col = list(db.columns)
     verscrlbar = tki.Scrollbar(root,
@@ -288,7 +291,9 @@ def DataWindow(root, db):
     massstart = [btn, to_reports, verscrlbar, tree, btn_redact]
 
 
-def Reports(root, db):
+def Reports(root):
+    global db
+
     def to_Graphs():
         for i in massstart:
             if i.winfo_viewable():
@@ -297,7 +302,7 @@ def Reports(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        Graphs(root, db)
+        Graphs(root)
 
     def pred():
         for i in massstart:
@@ -307,7 +312,7 @@ def Reports(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        DataWindow(root, db)
+        DataWindow(root)
 
     btn = tki.Button(
         root,
@@ -321,7 +326,8 @@ def Reports(root, db):
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
 
-    def stats_report(db):
+    def stats_report():
+        global db
         for i in mas:
             i.grid_remove()
         genre_min = db.groupby('ЖАНР', as_index=False) \
@@ -363,7 +369,7 @@ def Reports(root, db):
                                'bold'),
                            background='cyan1',
                            fg='black',
-                           command=lambda: stats_report(db))
+                           command=stats_report)
     btn_stats.grid(column=1, row=4)
 
     def opensimple_report():
@@ -374,20 +380,9 @@ def Reports(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        simple_report(root, db)
-
-    generate_pivot = tki.Button(root,
-                                text="Сводная таблица",
-                                font=(
-                                    'Times',
-                                    14,
-                                    'bold'),
-                                background='cyan1',
-                                fg='black',
-                                command=lambda: create_pivot(db))
-    generate_pivot.grid(column=1, row=2, ipadx=27)
-
-    def create_pivot(db):
+        simple_report(root)
+    def create_pivot():
+        global db
         for i in mas:
             i.grid_remove()
         pivot = db.groupby(['ФИО', 'ЖАНР'], as_index=False) \
@@ -414,6 +409,17 @@ def Reports(root, db):
         mas.append(tree2)
         mas.append(verscrlbar2)
 
+    generate_pivot = tki.Button(root,
+                                text="Сводная таблица",
+                                font=(
+                                    'Times',
+                                    14,
+                                    'bold'),
+                                background='cyan1',
+                                fg='black',
+                                command=create_pivot)
+    generate_pivot.grid(column=1, row=2, ipadx=27)
+
     to_simple = tki.Button(root,
                            font=(
                                'Times',
@@ -437,7 +443,10 @@ def Reports(root, db):
     massstart = [btn, generate_pivot, to_simple, Graph_btn, btn_stats]
 
 
-def simple_report(root, db):
+def simple_report(root):
+
+    global db
+
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -446,14 +455,16 @@ def simple_report(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        Reports(root, db)
+        Reports(root)
 
-    def clean(db):
+    def clean():
+        global db
         for i in mas:
             i.grid_remove()
-        search_simple(db)
+        search_simple()
 
-    def search_simple(db=None):
+    def search_simple():
+        global db
         tree3 = Treeview(root)
         verscrlbar2 = tki.Scrollbar(root,
                                     orient="vertical",
@@ -515,7 +526,7 @@ def simple_report(root, db):
                             'bold'),
                         background='cyan1',
                         fg='black',
-                        command=lambda: clean(db))
+                        command=clean)
     search.grid(column=1, row=1)
     btn = tki.Button(
         root,
@@ -531,7 +542,9 @@ def simple_report(root, db):
     massstart = [btn, search, cb5, cb6, cb7, cb4, cb3, cb2]
 
 
-def Graphs(root, db):
+def Graphs(root):
+    global db
+
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -540,7 +553,7 @@ def Graphs(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        Reports(root, db)
+        Reports(root)
 
     btn_back = tki.Button(
         root,
@@ -553,7 +566,8 @@ def Graphs(root, db):
         fg='black',
         command=pred)
 
-    def barplot(db):
+    def barplot():
+        global db
         db_for_bar = db.groupby('ФИО', as_index=False) \
             .agg({'ПРОЕКТ': 'count'}) \
             .rename(columns={'ПРОЕКТ': 'Количество проектов'})
@@ -581,9 +595,10 @@ def Graphs(root, db):
                                  'bold'),
                              background='cyan1',
                              fg='black',
-                             command=lambda: barplot(db))
+                             command=barplot)
 
-    def histplot(db):
+    def histplot():
+        global db
         fig = plt.figure()
         fig.patch.set_facecolor('none')
         fig.patch.set_alpha(0.6)
@@ -607,9 +622,10 @@ def Graphs(root, db):
                                   'bold'),
                               background='cyan1',
                               fg='black',
-                              command=lambda: histplot(db))
+                              command=histplot)
 
-    def boxplot(db):
+    def boxplot():
+        global db
         fig = plt.figure()
         fig.patch.set_facecolor('none')
         fig.patch.set_alpha(0.6)
@@ -633,9 +649,10 @@ def Graphs(root, db):
                                 'bold'),
                             background='cyan1',
                             fg='black',
-                            command=lambda: boxplot(db))
+                            command=boxplot)
 
-    def scatter(db):
+    def scatter():
+        global db
         fig = plt.figure()
         fig.patch.set_facecolor('none')
         fig.patch.set_alpha(0.6)
@@ -659,7 +676,7 @@ def Graphs(root, db):
                                  'bold'),
                              background='cyan1',
                              fg='black',
-                             command=lambda: scatter(db))
+                             command=scatter)
     btn_back.grid(column=0, row=0, ipadx=100)
     barplot_btn.grid(column=0, row=1, ipadx=41)
     histplot_btn.grid(column=0, row=2, ipadx=36)
@@ -668,7 +685,8 @@ def Graphs(root, db):
     massstart = [btn_back, barplot_btn, histplot_btn, boxlot_btn, scatter_btn]
 
 
-def RedactWindow(root, db):
+def RedactWindow(root):
+    global db
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -677,14 +695,14 @@ def RedactWindow(root, db):
                 i.grid()
         for i in mas:
             i.grid_remove()
-        DataWindow(root, db)
+        DataWindow(root)
     def to_add():
         for i in massstart:
             if i.winfo_viewable():
                 i.grid_remove()
             else:
                 i.grid()
-        AddWindow(root, db)
+        AddWindow(root)
 
     btn_add = tki.Button(
         root,
@@ -726,6 +744,7 @@ def RedactWindow(root, db):
     btn_back.grid(column=0, row=0, ipadx=100)
 
     def delete():
+        global db
         selected = tree_edit.selection()
         for i in selected:
             tree_edit.delete(i)
@@ -738,7 +757,7 @@ def RedactWindow(root, db):
             new_row = {'Н_АКТЁР': values[i], 'ФИО': values[i + 1], 'Д.Р': values[i + 2],
                        'ПОЛ': values[i + 3], 'СТАЖ': values[i + 4], 'ПРОЕКТ': values[i + 5], 'ЖАНР': values[i + 6]}
             new_db = new_db.append(new_row, ignore_index=True)
-
+        db = new_db
     btn_delete = tki.Button(
         root,
         text='Удалить выбранное',
@@ -753,14 +772,15 @@ def RedactWindow(root, db):
     massstart = [btn_back, btn_delete, btn_add, tree_edit, verscrlbar]
 
 
-def AddWindow(root, db):
+def AddWindow(root):
+    global db
     def pred():
         for i in massstart:
             if i.winfo_viewable():
                 i.grid_remove()
             else:
                 i.grid()
-        RedactWindow(root, db)
+        RedactWindow(root)
 
     def add():
         pass
