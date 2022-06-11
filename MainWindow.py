@@ -8,6 +8,9 @@ import os.path
 import sys
 from functools import partial
 
+from matplotlib import pyplot as plt
+import seaborn as sns
+
 massstart = []
 mas = []
 
@@ -254,6 +257,15 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
 
 
 def Reports(root, db):
+    def to_Graphs():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        for i in mas:
+            i.grid_remove()
+    Graphs(root,db)
     def pred():
         for i in massstart:
             if i.winfo_viewable():
@@ -332,7 +344,17 @@ def Reports(root, db):
                            text='Простой отчёт',
                            command=opensimple_report)
     to_simple.grid(column=1, row=1, pady=40)
-    massstart = [generate_pivot, to_simple]
+    Graph_btn = tki.Button(root,
+                           font=(
+                               'Times',
+                               14,
+                               'bold'),
+                           background='cyan1',
+                           fg='black',
+                           text='К графикам',
+                           command=to_Graphs)
+    Graph_btn.grid(column=1,row=2)
+    massstart = [generate_pivot, to_simple,Graph_btn]
 
 
 def simple_report(root, db):
@@ -428,3 +450,113 @@ def simple_report(root, db):
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
     massstart = [btn, search, cb5, cb6, cb7, cb4, cb3, cb2]
+def Graphs(root, db):
+    def pred():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        Reports(root, db)
+    btn_back = tki.Button(
+        root,
+        text='Назад',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=pred)
+    def barplot(db):
+        db_for_bar = db.groupby('ФИО', as_index=False) \
+            .agg({'ПРОЕКТ': 'count'}) \
+            .rename(columns={'ПРОЕКТ': 'Количество проектов'})
+        sns.set(rc={'figure.figsize': (12, 6)})
+        fig = plt.figure()
+        fig.patch.set_facecolor('blue')
+        fig.patch.set_alpha(0.6)
+        ax = fig.add_subplot(111)
+        ax.patch.set_facecolor('orange')
+        ax.patch.set_alpha(1.0)
+        sns.barplot(x=db_for_bar['ФИО'], y=db_for_bar['Количество проектов']) \
+            .set(title='\nКоличество проектов актёра')
+        plt.xticks(rotation=45)
+        plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+    barplot_btn = tki.Button(root,
+        text='Построить Барплот',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=lambda:barplot(db))
+
+    def histplot(db):
+        fig = plt.figure()
+        fig.patch.set_facecolor('none')
+        fig.patch.set_alpha(0.6)
+        ax = fig.add_subplot(111)
+        ax.patch.set_facecolor('none')
+        ax.patch.set_alpha(1.0)
+        sns.histplot(x=db['ПРОЕКТ'], hue=db['ЖАНР']) \
+            .set(title='\nКоличество актёров в проекте')
+        plt.xticks(rotation=90)
+        plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+
+    histplot_btn = tki.Button(root,
+                             text='Построить Хистплот',
+                             font=(
+                                 'Times',
+                                 14,
+                                 'bold'),
+                             background='cyan1',
+                             fg='black',
+                             command=lambda: histplot(db))
+    def boxplot(db):
+        fig = plt.figure()
+        fig.patch.set_facecolor('none')
+        fig.patch.set_alpha(0.6)
+        ax = fig.add_subplot(111)
+        ax.patch.set_facecolor('none')
+        ax.patch.set_alpha(1.0)
+        sns.boxplot(x=db['ЖАНР'], y=db['СТАЖ']) \
+            .set(title='\nСтаж актёров по жанрам')
+        plt.xticks(rotation=45)
+        plt.savefig('graph.png',bbox_inches = 'tight', dpi=70)
+    boxlot_btn = tki.Button(root,
+                              text='Построить Боксплот',
+                              font=(
+                                  'Times',
+                                  14,
+                                  'bold'),
+                              background='cyan1',
+                              fg='black',
+                              command=lambda: boxplot(db))
+    def scatter(db):
+        fig = plt.figure()
+        fig.patch.set_facecolor('none')
+        fig.patch.set_alpha(0.6)
+        ax = fig.add_subplot(111)
+        ax.patch.set_facecolor('none')
+        ax.patch.set_alpha(1.0)
+        sns.scatterplot(x=db['Д.Р.'], y=db['СТАЖ'], hue=db['ПОЛ']) \
+            .set(title='\nВзаимосвязь даты рождения и стажа актёров')
+        plt.xticks(rotation=45)
+        plt.savefig('graph.png', bbox_inches='tight', dpi=70)
+
+    scatter_btn = tki.Button(root,
+                            text='Построить Скаттер-плот',
+                            font=(
+                                'Times',
+                                14,
+                                'bold'),
+                            background='cyan1',
+                            fg='black',
+                            command=lambda: scatter(db))
+    btn_back.grid(column=0,row=0)
+    barplot_btn.grid(column=1,row=0)
+    histplot_btn.grid(column=2,row=0)
+    boxlot_btn.grid(column=3,row=0)
+    scatter_btn.grid(column=4,row=0)
