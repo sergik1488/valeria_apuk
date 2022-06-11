@@ -234,7 +234,25 @@ def DataWindow(root, tabl1, tabl2, tabl3, tabl4):
                             fg='black',
                             command=to_window_report)
     to_reports.grid(column=0, row=1, ipadx=80)
-
+    def to_redact():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        RedactWindow(root, db)
+    btn_redact = tki.Button(
+        root,
+        text='Редактировать базу данных',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=to_redact
+    )
+    btn_redact.grid(column=2, row=1)
     db = pd.read_csv(tabl1, sep=';') \
         .merge(pd.read_csv(tabl2, sep=';'), on='Н_ПРО') \
         .merge(pd.read_csv(tabl3, sep=';'), on='Н_ПРО') \
@@ -289,7 +307,55 @@ def Reports(root, db):
         fg='black',
         command=pred)
     btn.grid(column=0, row=0, ipadx=100)
-
+    def stats_report(db):
+        genre_min = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'min'}) \
+            .rename(columns={'СТАЖ': 'Минимальный стаж'})
+        genre_max = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'max'}) \
+            .rename(columns={'СТАЖ': 'Максимальный стаж'})
+        genre_std = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'std'}) \
+            .rename(columns={'СТАЖ': 'Стандартное отклонение стажа'})
+        genre_median = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'median'}) \
+            .rename(columns={'СТАЖ': 'Медиана стажа'})
+        genre_full = db.groupby('ЖАНР', as_index=False) \
+            .agg({'СТАЖ': 'mean'}) \
+            .rename(columns={'СТАЖ': 'Средний стаж'}) \
+            .merge(genre_max, on='ЖАНР') \
+            .merge(genre_min, on='ЖАНР') \
+            .merge(genre_std, on='ЖАНР') \
+            .merge(genre_median, on='ЖАНР')
+        tree3 = Treeview(root)
+        db_col = list(genre_full.columns)
+        tree3["columns"] = db_col
+        tree3['show'] = 'headings'
+        for i in range(len(db_col)):
+            tree3.column(db_col[i], width=15, anchor='c')
+            tree3.heading(db_col[i], text=str(db_col[i]))
+        for k in range(len(genre_full)):
+            tree3.insert("", 'end', values=(list(genre_full.iloc[k])))
+        tree3.grid(column=5, row=10, ipadx=200)
+    btn_stats = tki.Button(root,
+        text='Простая статистика БД',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=lambda:stats_report(db))
+    btn_stats.grid(column=0, row=10, ipadx=100)
+    def opensimple_report():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        for i in mas:
+            i.grid_remove()
+        simple_report(root, db)
     def opensimple_report():
         for i in massstart:
             if i.winfo_viewable():
@@ -579,3 +645,55 @@ def Graphs(root, db):
     boxlot_btn.grid(column=0,row=3, ipadx=36)
     scatter_btn.grid(column=0,row=4, ipadx=18)
     massstart = [btn_back, barplot_btn, histplot_btn, boxlot_btn, scatter_btn]
+def RedactWindow(root,db):
+    def pred():
+        for i in massstart:
+            if i.winfo_viewable():
+                i.grid_remove()
+            else:
+                i.grid()
+        for i in mas:
+            i.grid_remove()
+        DataWindow(root, db,tabl2=None,tabl3=None,tabl4=None)
+    btn_back = tki.Button(
+        root,
+        text='Назад',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=pred)
+    tree_edit = Treeview(root)
+    db_col = list(db.columns)
+    verscrlbar = tki.Scrollbar(root,
+                               orient="vertical",
+                               command=tree_edit.yview)
+    tree_edit["columns"] = db_col
+    tree_edit['show'] = 'headings'
+    for i in range(len(db_col)):
+        tree_edit.column(db_col[i], width=15, anchor='c')
+        tree_edit.heading(db_col[i], text=str(db_col[i]))
+    for k in range(len(db)):
+        tree_edit.insert("", 'end', values=(list(db.iloc[k])))
+    tree_edit.grid(column=2, row=10, ipadx=200)
+    verscrlbar.grid(column=3, row=10, ipady=86)
+    tree_edit.configure(yscrollcommand=verscrlbar.set)
+    btn_back.grid(column=0,row=0)
+    def delete():
+        selected=tree_edit.selection()
+        for i in selected:
+            tree_edit.delete(i)
+
+    btn_delete = tki.Button(
+        root,
+        text='Удалить выбранное',
+        font=(
+            'Times',
+            14,
+            'bold'),
+        background='cyan1',
+        fg='black',
+        command=delete)
+    btn_delete.grid(column=1,row=0)
